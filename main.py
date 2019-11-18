@@ -1,11 +1,11 @@
 import requests
-
-base_url = 'http://www.gwbn-vpn.top'
+import time
 
 
 def checkin():
-    email = input('email: ')
-    password = input('password: ')
+    base_url = 'https://xxx.com'
+    email = ""
+    password = ""
 
     email = email.split('@')
     email = email[0] + '%40' + email[1]
@@ -13,23 +13,24 @@ def checkin():
     session = requests.session()
     login_url = base_url + '/auth/login'
     headers = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36',
         'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
     }
     post_data = 'email=' + email + '&passwd=' + password + '&code=&remember_me=week'
     post_data = post_data.encode()
-    response = session.post(login_url, post_data, headers=headers, verify=False)
+    session.post(login_url, post_data, headers=headers)
 
     headers = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36',
         'Referer': base_url + '/user'
     }
-
     response = session.post(base_url + '/user/checkin', headers=headers)
+    print(response.json())
 
-while True:
-    try:
-        checkin()
-    except Exception:
-        continue
-    break
+
+if __name__ == "__main__":
+    for _ in range(3):
+        try:
+            checkin()
+        except requests.exceptions.RequestException:
+            time.sleep(3)
+            continue
+        break
